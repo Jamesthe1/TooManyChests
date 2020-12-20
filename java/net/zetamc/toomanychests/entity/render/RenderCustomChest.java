@@ -20,82 +20,6 @@ import net.zetamc.toomanychests.util.Reference;
 public class RenderCustomChest extends TileEntitySpecialRenderer<TileEntityCustomChest> {
 	private static final String TEXTURES_LOCATION = "textures/entity/chest/";
 	
-	private static final String NAME_STONE = "stone";
-	private static final String NAME_NETHER = "netherbrick";
-	private static final String NAME_OBSIDIAN = "obsidian";
-	private static final String NAME_BONE = "bone";
-	private static final String NAME_BEDROCK = "bedrock";
-	private static final String NAME_BOOKS = "bookcase";
-	private static final String NAME_BRICK = "brick";
-	private static final String NAME_CACTUS = "cactus";
-	private static final String NAME_CAKE = "cake";
-	private static final String NAME_CLAY = "clay";
-	private static final String NAME_COAL = "coal";
-	private static final String NAME_EMERALD = "emerald";
-	private static final String NAME_ENDBRICK = "end_brick";
-	private static final String NAME_GLASS = "glass";
-	private static final String NAME_GLOWSTONE = "glowstone";
-	private static final String NAME_GRASS = "grass";
-	private static final String NAME_ICE = "ice";
-	private static final String NAME_PODZOL = "podzol";
-
-    private static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation (TEXTURES_LOCATION + "normal.png");
-    private static final ResourceLocation TEXTURE_NORMAL_DOUBLE = new ResourceLocation (TEXTURES_LOCATION + "normal_double.png");
-    private static final ResourceLocation TEXTURE_TRAPPED = new ResourceLocation (TEXTURES_LOCATION + "trapped.png");
-    private static final ResourceLocation TEXTURE_TRAPPED_DOUBLE = new ResourceLocation (TEXTURES_LOCATION + "trapped_double.png");
-    
-	private static final ResourceLocation TEXTURE_STONE = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_STONE + ".png");
-	private static final ResourceLocation TEXTURE_STONE_DBL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_STONE + "_double.png");
-	private static final ResourceLocation TEXTURE_STONE_TRAP = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_STONE + "_trapped.png");
-	private static final ResourceLocation TEXTURE_STONE_DBL_TRAP = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_STONE + "_double_trapped.png");
-	
-	private static final ResourceLocation TEXTURE_NETHER = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_NETHER + ".png");
-	private static final ResourceLocation TEXTURE_NETHER_DBL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_NETHER + "_double.png");
-	private static final ResourceLocation TEXTURE_NETHER_TRAP = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_NETHER + "_trapped.png");
-	private static final ResourceLocation TEXTURE_NETHER_DBL_TRAP = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_NETHER + "_double_trapped.png");
-
-	private static final ResourceLocation TEXTURE_OBSIDIAN = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_OBSIDIAN + ".png");
-	private static final ResourceLocation TEXTURE_OBSIDIAN_DBL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_OBSIDIAN + "_double.png");
-
-	private static final ResourceLocation TEXTURE_BONE = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_BONE + ".png");
-	private static final ResourceLocation TEXTURE_BONE_DBL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_BONE + "_double.png");
-	
-	// Only one version of bedrock chest
-	private static final ResourceLocation TEXTURE_BEDROCK = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_BEDROCK + ".png");
-	
-	private static final ResourceLocation TEXTURE_BOOKS = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_BOOKS + ".png");
-	private static final ResourceLocation TEXTURE_BOOKS_DBL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_BOOKS + "_double.png");
-	private static final ResourceLocation TEXTURE_BOOKS_TRAP = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_BOOKS + "_trapped.png");
-	private static final ResourceLocation TEXTURE_BOOKS_DBL_TRAP = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_BOOKS + "_double_trapped.png");
-	
-	private static final ResourceLocation TEXTURE_BRICK = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_BRICK + ".png");
-
-	private static final ResourceLocation TEXTURE_CACTUS = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_CACTUS + ".png");
-	private static final ResourceLocation TEXTURE_CACTUS_DBL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_CACTUS + "_double.png");
-	
-	private static final ResourceLocation TEXTURE_CAKE = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_CAKE + ".png");
-
-	private static final ResourceLocation TEXTURE_CLAY = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_CLAY + ".png");
-
-	private static final ResourceLocation TEXTURE_COAL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_COAL + ".png");
-	private static final ResourceLocation TEXTURE_COAL_DBL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_COAL + "_double.png");
-	
-	private static final ResourceLocation TEXTURE_EMERALD = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_EMERALD + ".png");
-
-	private static final ResourceLocation TEXTURE_ENDBRICK = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_ENDBRICK + ".png");
-	private static final ResourceLocation TEXTURE_ENDBRICK_DBL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_ENDBRICK + "_double.png");
-	
-	private static final ResourceLocation TEXTURE_GLASS = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_GLASS + ".png");
-
-	private static final ResourceLocation TEXTURE_GLOWSTONE = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_GLOWSTONE + ".png");
-
-	private static final ResourceLocation TEXTURE_GRASS = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_GRASS + ".png");
-
-	private static final ResourceLocation TEXTURE_ICE = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_ICE + ".png");
-	private static final ResourceLocation TEXTURE_ICE_DBL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_ICE + "_double.png");
-
-	private static final ResourceLocation TEXTURE_PODZOL = new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + NAME_PODZOL + ".png");
-	
     private final ModelCustomChest simpleChest = new ModelCustomChest ();
     private final ModelCustomChest largeChest = new ModelLargeCustomChest ();
     
@@ -104,60 +28,11 @@ public class RenderCustomChest extends TileEntitySpecialRenderer<TileEntityCusto
 	}
 	
 	private ResourceLocation getTexture (String regName, boolean isTrapped, boolean isDouble) {
-		int chestScale = isDouble ? 1 : 0;
-		int trapOffset = isTrapped ? 2 : 0;
+		String baseName = regName.replace ("chest_", "").replace ("_trapped", "");
+		String dblTag = (isDouble ? "_double" : "");
+		String trapTag = (isTrapped ? "_trapped" : "");
 		
-		ResourceLocation[] norms = {TEXTURE_NORMAL, TEXTURE_NORMAL_DOUBLE, TEXTURE_TRAPPED, TEXTURE_TRAPPED_DOUBLE};
-		ResourceLocation[] stone = {TEXTURE_STONE, TEXTURE_STONE_DBL, TEXTURE_STONE_TRAP, TEXTURE_STONE_DBL_TRAP};
-		ResourceLocation[] nether = {TEXTURE_NETHER, TEXTURE_NETHER_DBL, TEXTURE_NETHER_TRAP, TEXTURE_NETHER_DBL_TRAP};
-		ResourceLocation[] obsidian = {TEXTURE_OBSIDIAN, TEXTURE_OBSIDIAN_DBL};
-		ResourceLocation[] bone = {TEXTURE_BONE, TEXTURE_BONE_DBL};
-		ResourceLocation[] books = {TEXTURE_BOOKS, TEXTURE_BOOKS_DBL, TEXTURE_BOOKS_TRAP, TEXTURE_BOOKS_DBL_TRAP};
-		ResourceLocation[] cactus = {TEXTURE_CACTUS, TEXTURE_CACTUS_DBL};
-		ResourceLocation[] coal = {TEXTURE_COAL, TEXTURE_COAL_DBL};
-		ResourceLocation[] endbrick = {TEXTURE_ENDBRICK, TEXTURE_ENDBRICK_DBL};
-		ResourceLocation[] ice = {TEXTURE_ICE, TEXTURE_ICE_DBL};
-		
-		switch (regName.replace ("chest_", "").replace ("_trapped", "")) {
-			default:
-				return norms[chestScale + trapOffset];
-			case NAME_STONE:
-				return stone[chestScale + trapOffset];
-			case NAME_NETHER:
-				return nether[chestScale + trapOffset];
-			case NAME_OBSIDIAN:
-				return obsidian[chestScale];
-			case NAME_BONE:
-				return bone[chestScale];
-			case NAME_BEDROCK:
-				return TEXTURE_BEDROCK;
-			case NAME_BOOKS:
-				return books[chestScale + trapOffset];
-			case NAME_BRICK:
-				return TEXTURE_BRICK;
-			case NAME_CACTUS:
-				return cactus[chestScale];
-			case NAME_CAKE:
-				return TEXTURE_CAKE;
-			case NAME_CLAY:
-				return TEXTURE_CLAY;
-			case NAME_COAL:
-				return coal[chestScale];
-			case NAME_EMERALD:
-				return TEXTURE_EMERALD;
-			case NAME_ENDBRICK:
-				return endbrick[chestScale];
-			case NAME_GLASS:
-				return TEXTURE_GLASS;
-			case NAME_GLOWSTONE:
-				return TEXTURE_GLOWSTONE;
-			case NAME_GRASS:
-				return TEXTURE_GRASS;
-			case NAME_ICE:
-				return ice[chestScale];
-			case NAME_PODZOL:
-				return TEXTURE_PODZOL;
-		}
+		return new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + baseName + dblTag + trapTag + ".png");
 	}
 	
 	public void render (TileEntityCustomChest te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
