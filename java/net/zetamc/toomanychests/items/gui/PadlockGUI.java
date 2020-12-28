@@ -29,6 +29,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.LockCode;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.terraingen.BiomeEvent.GetWaterColor;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -126,12 +127,6 @@ public class PadlockGUI extends GuiScreen {
 			te.setLockCode (code);
 			world.playSound (player, te.getPos (), SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.BLOCKS, 1, 1);
 			
-			if (player instanceof EntityPlayerMP) {
-				EntityPlayerMP mpplayer = (EntityPlayerMP)player;
-				
-				((TileEntityLockable)mpplayer.world.getTileEntity (te.getPos ())).setLockCode (code);
-			}
-			
 			/*
 			 * TODO: write packet buffer and sending code
 			 */
@@ -144,7 +139,7 @@ public class PadlockGUI extends GuiScreen {
 	
 	public void tryOpen (String strCode) {
 		Block block = te.getBlockType ();
-		EntityPlayerMP fakePlayer = new EntityPlayerMP (null, null, null, null);
+		FakePlayer fakePlayer = new FakePlayer (null, null);
 		ItemStack codeHolder = new ItemStack (Items.PAPER);
 		fakePlayer.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, codeHolder.setStackDisplayName (strCode));
 		// Commented because we need to tell the server what we want; not sure how to do this yet
