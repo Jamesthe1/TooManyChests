@@ -29,14 +29,13 @@ public class RenderCustomChest extends TileEntitySpecialRenderer<TileEntityCusto
 	
 	private ResourceLocation getTexture (String regName, boolean isTrapped, boolean isDouble) {
 		String baseName = regName.replace ("chest_", "").replace ("_trapped", "");
-		String dblTag = (isDouble ? "_double" : "");
-		String trapTag = (isTrapped ? "_trapped" : "");
+		String dblTag = isDouble ? "_double" : "";
+		String trapTag = isTrapped ? "_trapped" : "";
 		
 		return new ResourceLocation (Reference.MOD_ID + ':' + TEXTURES_LOCATION + baseName + dblTag + trapTag + ".png");
 	}
 	
 	public void render (TileEntityCustomChest te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-		
 		GlStateManager.enableDepth ();
         GlStateManager.depthFunc (515);
         GlStateManager.depthMask (true);
@@ -52,8 +51,7 @@ public class RenderCustomChest extends TileEntitySpecialRenderer<TileEntityCusto
             }
 
             te.checkForAdjacentChests ();
-        } else
-            i = 0;
+        } else i = 0;
 
         if (te.adjacentChestZNeg == null && te.adjacentChestXNeg == null) {
             ModelCustomChest modelchest;

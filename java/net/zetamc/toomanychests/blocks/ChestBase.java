@@ -2,44 +2,26 @@ package net.zetamc.toomanychests.blocks;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.properties.*;
+import net.minecraft.block.state.*;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.*;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.InventoryLargeChest;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.*;
+import net.minecraft.item.*;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.ILockableContainer;
-import net.minecraft.world.World;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import net.zetamc.toomanychests.Main;
 import net.zetamc.toomanychests.blocks.tileentity.TileEntityCustomChest;
-import net.zetamc.toomanychests.entity.player.CustomChestUIFix;
 import net.zetamc.toomanychests.init.*;
 import net.zetamc.toomanychests.util.IModelLoad;
 import net.zetamc.toomanychests.util.Reference;
@@ -60,7 +42,7 @@ public class ChestBase extends BlockContainer implements IModelLoad {
 	final int stackSize;
 	final String regName;
 	
-	public ChestBase (String name, Material material, int guiId, int invSize, int stackSize, boolean isTrapped, String tool, float hardness, float blastResistance, boolean canBeDouble) {
+	public ChestBase (String name, SoundType soundType, Material material, int guiId, int invSize, int stackSize, boolean isTrapped, String tool, float hardness, float blastResistance, boolean canBeDouble) {
 		super (material);
 		this.guiId = guiId;
 		this.invSize = invSize;
@@ -73,6 +55,7 @@ public class ChestBase extends BlockContainer implements IModelLoad {
 		setTranslationKey (name);
 		setRegistryName (name);
 		setCreativeTab (ModItems.TAB_CHESTS);
+		setSoundType (soundType);
 		
 		setHardness (hardness);
 		if (hardness >= 99) setBlockUnbreakable ();
@@ -224,17 +207,17 @@ public class ChestBase extends BlockContainer implements IModelLoad {
         }
     }
 	
-	public void onBlockAdded (World worldIn, BlockPos pos, IBlockState state) {
+	public void onBlockAdded (World world, BlockPos pos, IBlockState state) {
 		if (!canBeDouble) return;
 		
-        this.checkForSurroundingChests (worldIn, pos, state);
+        this.checkForSurroundingChests (world, pos, state);
 
         for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL) {
             BlockPos blockpos = pos.offset (enumfacing);
-            IBlockState iblockstate = worldIn.getBlockState (blockpos);
+            IBlockState iblockstate = world.getBlockState (blockpos);
 
             if (iblockstate.getBlock () == this)
-                this.checkForSurroundingChests (worldIn, blockpos, iblockstate);
+                this.checkForSurroundingChests (world, blockpos, iblockstate);
         }
     }
 	
@@ -325,55 +308,43 @@ public class ChestBase extends BlockContainer implements IModelLoad {
 		return false;
 	}
 	
+	@SideOnly(Side.CLIENT)
+    public boolean hasCustomBreakingProgress (IBlockState state) {
+        return true;
+    }
+	
 	@Override
 	public boolean isOpaqueCube (IBlockState state) {
 		return false;
 	}
 	
-	/**
-     * Gets the chest inventory at the given location, returning null if the chest is blocked or there is no chest at
-     * that location. Handles large chests.
-     *  
-     * @param worldIn The world
-     * @param pos The position to check
-     */
     @Nullable
-    public ILockableContainer getLockableContainer (World worldIn, BlockPos pos) {
-        return getContainer (worldIn, pos, false);
+    public ILockableContainer getLockableContainer (World world, BlockPos pos) {
+        return getContainer (world, pos, false);
     }
     
-    /**
-     * Gets the chest inventory at the given location, returning null if there is no chest at that location or
-     * optionally if the chest is blocked. Handles large chests.
-     *  
-     * @param worldIn The world
-     * @param pos The position to check
-     * @param allowBlocking If false, then if the chest is blocked then <code>null</code> will be returned. If true,
-     * ignores blocking for the chest at the given position (but, due to <a href="https://bugs.mojang.com/browse/MC-
-     * 99321">a bug</a>, still checks if the neighbor is blocked).
-     */
     @Nullable
-    public ILockableContainer getContainer (World worldIn, BlockPos pos, boolean allowBlocking) {
-        TileEntity tileentity = worldIn.getTileEntity (pos);
+    public ILockableContainer getContainer (World world, BlockPos pos, boolean allowBlocking) {
+        TileEntity tileentity = world.getTileEntity (pos);
 
         if (!(tileentity instanceof TileEntityCustomChest))
             return null;
         else {
             ILockableContainer ilockablecontainer = (TileEntityCustomChest)tileentity;
 
-            if (!allowBlocking && this.isBlocked (worldIn, pos))
+            if (!allowBlocking && this.isBlocked (world, pos))
                 return null;
             else {
             	if (canBeDouble) {
 	                for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL) {
 	                    BlockPos blockpos = pos.offset (enumfacing);
-	                    Block block = worldIn.getBlockState (blockpos).getBlock ();
+	                    Block block = world.getBlockState (blockpos).getBlock ();
 	
 	                    if (block == this) {
-	                        if (!allowBlocking && this.isBlocked (worldIn, blockpos)) // Forge: fix MC-99321
+	                        if (!allowBlocking && this.isBlocked (world, blockpos)) // Forge: fix MC-99321
 	                            return null;
 	
-	                        TileEntity tileentity1 = worldIn.getTileEntity (blockpos);
+	                        TileEntity tileentity1 = world.getTileEntity (blockpos);
 	
 	                        if (tileentity1 instanceof TileEntityCustomChest) {
 	                            if (enumfacing != EnumFacing.WEST && enumfacing != EnumFacing.NORTH)
@@ -392,6 +363,24 @@ public class ChestBase extends BlockContainer implements IModelLoad {
     
     public boolean canProvidePower (IBlockState state) {
         return this.chestType == BlockChest.Type.TRAP;
+    }
+    
+    public int getWeakPower (IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+        if (!blockState.canProvidePower ())
+            return 0;
+        else {
+            int i = 0;
+            TileEntity tileentity = blockAccess.getTileEntity (pos);
+
+            if (tileentity instanceof TileEntityCustomChest)
+                i = ((TileEntityCustomChest)tileentity).numPlayersUsing;
+
+            return MathHelper.clamp (i, 0, 15);
+        }
+    }
+    
+    public int getStrongPower (IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+        return side == EnumFacing.UP ? blockState.getWeakPower (blockAccess, pos, side) : 0;
     }
     
     public IBlockState getStateForPlacement (World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {

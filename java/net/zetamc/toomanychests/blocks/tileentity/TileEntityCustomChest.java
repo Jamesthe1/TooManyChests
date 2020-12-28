@@ -1,5 +1,7 @@
 package net.zetamc.toomanychests.blocks.tileentity;
 
+import java.lang.reflect.Constructor;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -20,14 +22,19 @@ import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.datafix.walkers.ItemStackDataLists;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.LockCode;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.items.*;
 
 import net.zetamc.toomanychests.blocks.ChestBase;
@@ -36,10 +43,12 @@ import net.zetamc.toomanychests.util.handlers.DoubleChestHandler;
 
 // Copying data from TileEntityChest because we can't override the private inventory variable properly
 public class TileEntityCustomChest extends TileEntityLockableLoot implements ITickable {
-	public final int invSize;
-	private final int stackLimit;
-	public final String regName;
-	public boolean canBeDouble;
+    private static final RegistryNamespaced<ResourceLocation, Class<? extends TileEntity>> REGISTRY = new RegistryNamespaced<ResourceLocation, Class<? extends TileEntity>> ();
+    
+	public int invSize = 27;
+	private int stackLimit = 64;
+	public String regName = "custom_chest";
+	public boolean canBeDouble = true;
 	
 	private NonNullList<ItemStack> chestContents;
 	
@@ -62,6 +71,24 @@ public class TileEntityCustomChest extends TileEntityLockableLoot implements ITi
     /** Server sync counter (once per 20 ticks) */
     private int ticksSinceSync;
     private BlockChest.Type cachedChestType;
+    
+    // Needed to prevent NoSuchMethodException
+    public TileEntityCustomChest () {
+    	
+    }
+    
+    private void getTraces () {
+    	StackTraceElement[] stackTraces = new Throwable ().getStackTrace ();
+		String traceStr = "getTraces() called; investigating:";
+		int traces = 0;
+		for (StackTraceElement st : stackTraces) {
+			traceStr += "\n\\ [" + st.getLineNumber () + "] ";
+			traceStr += st.getClassName () + "." + st.getMethodName () + "()";
+			traces++;
+		}
+		
+		Reference.LOGGER.info (traceStr);
+    }
 	
 	public TileEntityCustomChest (int invSize, int stackLimit, String regName, boolean canBeDouble) {
 		this.invSize = invSize;
@@ -312,10 +339,6 @@ public class TileEntityCustomChest extends TileEntityLockableLoot implements ITi
         return super.getCapability (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
     }
 
-
-    /**
-     * invalidates a tile entity
-     */
     public void invalidate () {
         super.invalidate ();
         this.updateContainingBlockInfo ();
@@ -340,14 +363,23 @@ public class TileEntityCustomChest extends TileEntityLockableLoot implements ITi
 	
 	@Override
 	public void readFromNBT (NBTTagCompound compound) {
-		super.readFromNBT(compound);
+		super.readFromNBT (compound);
 		
+		// invSize needed first for next statement
+        invSize = compound.getInteger ("invSize");
 		chestContents = NonNullList.<ItemStack>withSize (invSize, ItemStack.EMPTY);
 		if (!this.checkLootAndRead (compound))
             ItemStackHelper.loadAllItems (compound, chestContents);
 
         if (compound.hasKey ("CustomName", 8))
             this.customName = compound.getString ("CustomName");
+        
+        stackLimit = compound.getInteger ("stackLimit");
+        // If statement needed to avoid the blank chest error
+        if (regName == "custom_chest") {
+        	regName = compound.getString ("regName");
+        	canBeDouble = compound.getBoolean ("canBeDouble");
+        }
 	}
 	
 	@Override
@@ -359,7 +391,18 @@ public class TileEntityCustomChest extends TileEntityLockableLoot implements ITi
 
         if (this.hasCustomName ())
             compound.setString ("CustomName", this.customName);
+        
+        compound.setInteger ("invSize", invSize);
+        compound.setInteger ("stackLimit", stackLimit);
+        compound.setString ("regName", regName);
+        compound.setBoolean ("canBeDouble", canBeDouble);
 
         return compound;
     }
+	
+	/*@Override
+	public LockCode getLockCode () {
+		getTraces ();
+		return super.getLockCode ();
+	}*/
 }
